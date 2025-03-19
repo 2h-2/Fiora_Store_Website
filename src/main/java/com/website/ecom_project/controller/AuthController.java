@@ -1,7 +1,6 @@
 package com.website.ecom_project.controller;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,8 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.website.ecom_project.error.OTPExpiredException;
+import com.website.ecom_project.model.dto.ForgotPasswordDto;
 import com.website.ecom_project.model.dto.LoginDto;
 import com.website.ecom_project.model.dto.LoginResponse;
+import com.website.ecom_project.model.dto.ResetPasswordDto;
 import com.website.ecom_project.model.dto.signUpDto;
 import com.website.ecom_project.model.entity.Role;
 import com.website.ecom_project.model.entity.User;
@@ -57,22 +59,58 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("Error: Role "+ role +" not found."));
                 roles.add(roleObj);
         });
-
-        authService.signUp(User.toEntity(user, roles));
+        
+        User userObj = User.toEntity(user, roles);
+        authService.signUp(userObj);
         return new ResponseEntity<>("Registration Success.", HttpStatus.OK);
 
     }
-}
-/*
- switch (role.toLowerCase()) {
-            case "admin":
-                Role adminRole = roleRepository.findByName(RoleEnum.valueOf(role))
-                    .orElseThrow(() -> new RuntimeException("Error: Role ADMIN not found."));
-                roles.add(adminRole);
-                break;
-            default:
-                Role userRole = roleRepository.findByName(RoleEnum.USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role USER not found."));
-                roles.add(userRole);
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDto request) {
+        try {
+            authService.sendForgotPasswordEmail(request.getEmail());
+            return ResponseEntity.ok("Password reset email sent successfully");
+
+        } catch (OTPExpiredException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
- */
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOTP(@RequestParam String email, @RequestParam String otp) {
+        try {
+            authService.verifyOTP(email, otp); 
+            return ResponseEntity.ok("OTP verified successfully");
+
+        } catch (OTPExpiredException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("OTP verification failed: " + ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyYoken(@RequestParam String token) {
+        try {
+
+            authService.verifyToken(token); 
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(" Verifiecation successfully");
+        
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred" + ex);
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto request) {
+        try {
+            authService.resetPassword(request);
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
+    }
+}

@@ -8,5 +8,7 @@ import com.website.ecom_project.model.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
     Optional<User> findByEmail(String email);
+    Optional<User> findByVerificationToken(String token);
     Boolean existsByEmail(String email);
+
 }
