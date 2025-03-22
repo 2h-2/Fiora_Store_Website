@@ -1,26 +1,31 @@
 package com.website.ecom_project.service;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.website.ecom_project.error.OTPExpiredException;
 import com.website.ecom_project.model.dto.LoginDto;
 import com.website.ecom_project.model.dto.LoginResponse;
 import com.website.ecom_project.model.dto.ResetPasswordDto;
 import com.website.ecom_project.model.dto.UserDto;
+import com.website.ecom_project.model.dto.signUpDto;
+import com.website.ecom_project.model.entity.Role;
 import com.website.ecom_project.model.entity.User;
-
+import com.website.ecom_project.model.enums.RoleEnum;
+import com.website.ecom_project.model.mapper.UserMapper;
+import com.website.ecom_project.repository.RoleRepository;
 import com.website.ecom_project.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
@@ -43,6 +48,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired 
+    RoleRepository roleRepository;
+
     @Autowired
     JwtService jwtService;
     
@@ -63,7 +71,13 @@ public class AuthService {
         return encoder.matches(rawPassword, hashedPassword);
 }
 
-    public void signUp(User user){
+    public void signUp(signUpDto dto){
+
+
+        Set<Role> roles = assignRoles(dto.getRoles());
+
+        User user = UserMapper.INSTANCE.signUpDtoToUser(dto);
+        user.setRoles(roles);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.generateVerificationToken();
@@ -130,5 +144,17 @@ public class AuthService {
         User user = userObj.get();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepo.save(user);
+    }
+
+    private Set<Role> assignRoles(Set<String> roleNames) {
+        Set<Role> roles = new HashSet<>();
+        
+        roleNames.forEach(role -> {
+            Role roleObj = roleRepository.findByName(RoleEnum.valueOf(role))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "❌ Role '" + role + "' not found."));
+            roles.add(roleObj);
+        });
+
+        return roles;
     }
 }

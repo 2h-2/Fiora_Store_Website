@@ -6,18 +6,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.website.ecom_project.model.dto.signUpDto;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@
+Data
 @Table(name = "users")
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -46,6 +44,9 @@ public class User {
     private String verificationToken;
     private boolean enabled = false;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
         name = "user_roles",
@@ -54,18 +55,11 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore 
+    private Set< Review> reviews = new HashSet<>();
 
-    public static User toEntity(signUpDto dto , Set<Role> roles){
-        
-        return User.builder()
-        .userName(dto.getUserName())
-        .email(dto.getEmail())
-        .password(dto.getPassword())
-        .address(dto.getAddress())
-        .roles(roles)
-        .phone(dto.getPhone())
-        .build();
-    }
 
     public void generateOTP(){
         this.otp = generateRandomOtp();

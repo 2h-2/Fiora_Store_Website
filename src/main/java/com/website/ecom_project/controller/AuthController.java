@@ -1,23 +1,17 @@
 package com.website.ecom_project.controller;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.website.ecom_project.error.OTPExpiredException;
 import com.website.ecom_project.model.dto.ForgotPasswordDto;
 import com.website.ecom_project.model.dto.LoginDto;
 import com.website.ecom_project.model.dto.LoginResponse;
 import com.website.ecom_project.model.dto.ResetPasswordDto;
 import com.website.ecom_project.model.dto.signUpDto;
-import com.website.ecom_project.model.entity.Role;
 import com.website.ecom_project.model.entity.User;
-import com.website.ecom_project.model.enums.RoleEnum;
 import com.website.ecom_project.repository.RoleRepository;
 import com.website.ecom_project.repository.UserRepository;
 import com.website.ecom_project.service.AuthService;
@@ -52,16 +46,7 @@ public class AuthController {
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
         }
 
-        Set<Role> roles = new HashSet<>();
-
-        user.getRoles().forEach(role -> {
-            Role roleObj = roleRepository.findByName(RoleEnum.valueOf(role))
-                    .orElseThrow(() -> new RuntimeException("Error: Role "+ role +" not found."));
-                roles.add(roleObj);
-        });
-        
-        User userObj = User.toEntity(user, roles);
-        authService.signUp(userObj);
+        authService.signUp(user);
         return new ResponseEntity<>("Registration Success.", HttpStatus.OK);
 
     }
@@ -113,4 +98,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
     }
+
 }
