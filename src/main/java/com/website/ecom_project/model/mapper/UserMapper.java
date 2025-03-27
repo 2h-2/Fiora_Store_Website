@@ -15,4 +15,6 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true) 
     @Mapping(target = "enabled", constant = "false") 
     User signUpDtoToUser(signUpDto dto);
+
+    
 }

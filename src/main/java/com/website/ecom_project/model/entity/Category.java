@@ -34,6 +34,14 @@ public class Category {
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
-    
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parentCategory;
 
+    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
+    private Set<Category> subCategories = new HashSet<>();
+
+    public Category(Long id){
+        this.id = id;
+    }
 }

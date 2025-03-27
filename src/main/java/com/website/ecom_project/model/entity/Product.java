@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.website.ecom_project.model.base.BaseEntity;
 
 
 @Table(name = "products")
@@ -16,10 +17,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Product extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private String name;
@@ -44,6 +42,7 @@ public class Product {
     )
     private Set<Category> categories = new HashSet<>();
 
+    
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore 

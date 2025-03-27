@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-@
-Data
+@Setter
+@Getter
 @Table(name = "users")
 @Entity
 @NoArgsConstructor
@@ -60,6 +60,8 @@ public class User {
     @JsonIgnore 
     private Set< Review> reviews = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Wishlist> wishlist = new HashSet<>();
 
     public void generateOTP(){
         this.otp = generateRandomOtp();
