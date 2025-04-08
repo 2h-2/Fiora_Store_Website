@@ -26,19 +26,24 @@ public class ProductService {
 
     
     public void create(ProductDto dto){
+        
+        
         Product product = productMapper.toEntity(dto);
-        Set<Category> categories = dto.getIds().stream().map(id -> categoryRepo.findById(id).orElseThrow(() -> new RuntimeException("Category not found: " + id))).collect(Collectors.toSet());
         
         
-
-        product.setCategories(categories);
-        categoryRepo.saveAll(categories);
-        for (Category category : categories) {
-            category.getProducts().add(product);
+        if (dto.getCategoriesIds().isEmpty()) {
+            throw new RuntimeException("No category IDs provided");
         }
+        Set<Category> categories = dto.getCategoriesIds().stream()
+        .map(id -> {
+            System.out.println("Looking for Category ID: " + id); 
+            return categoryRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found: " + id));
+        })
+        .collect(Collectors.toSet());        product.setCategories(categories);
         
-
-        productRepo.save(product);
+    
+        productRepo.save(product); 
     }
 
 } 
