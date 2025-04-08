@@ -10,7 +10,7 @@ import com.website.ecom_project.model.dto.ForgotPasswordDto;
 import com.website.ecom_project.model.dto.LoginDto;
 import com.website.ecom_project.model.dto.LoginResponse;
 import com.website.ecom_project.model.dto.ResetPasswordDto;
-import com.website.ecom_project.model.dto.signUpDto;
+import com.website.ecom_project.model.dto.SignUpDto;
 import com.website.ecom_project.model.entity.User;
 import com.website.ecom_project.repository.RoleRepository;
 import com.website.ecom_project.repository.UserRepository;
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody signUpDto user){
+    public ResponseEntity<?> registerUser(@RequestBody SignUpDto user){
 
         if(userRepo.existsByEmail(user.getEmail())){
             return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);

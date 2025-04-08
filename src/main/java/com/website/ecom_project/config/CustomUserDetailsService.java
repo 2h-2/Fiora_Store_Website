@@ -15,6 +15,7 @@ import com.website.ecom_project.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService  {
+    
     private UserRepository userRepo ;
 
     public CustomUserDetailsService(UserRepository userRepo) {

@@ -20,7 +20,7 @@ import com.website.ecom_project.model.dto.LoginDto;
 import com.website.ecom_project.model.dto.LoginResponse;
 import com.website.ecom_project.model.dto.ResetPasswordDto;
 import com.website.ecom_project.model.dto.UserDto;
-import com.website.ecom_project.model.dto.signUpDto;
+import com.website.ecom_project.model.dto.SignUpDto;
 import com.website.ecom_project.model.entity.Role;
 import com.website.ecom_project.model.entity.User;
 import com.website.ecom_project.model.enums.RoleEnum;
@@ -29,11 +29,13 @@ import com.website.ecom_project.repository.RoleRepository;
 import com.website.ecom_project.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
 
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     @Autowired 
@@ -53,6 +55,8 @@ public class AuthService {
 
     @Autowired
     JwtService jwtService;
+
+    private final UserMapper userMapper;
     
     public LoginResponse login(LoginDto loginDto){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -71,12 +75,12 @@ public class AuthService {
         return encoder.matches(rawPassword, hashedPassword);
 }
 
-    public void signUp(signUpDto dto){
+    public void signUp(SignUpDto dto){
 
 
         Set<Role> roles = assignRoles(dto.getRoles());
 
-        User user = UserMapper.INSTANCE.signUpDtoToUser(dto);
+        User user = userMapper.signUpDtoToUser(dto);
         user.setRoles(roles);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

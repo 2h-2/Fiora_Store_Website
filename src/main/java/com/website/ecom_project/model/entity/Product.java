@@ -34,7 +34,7 @@ public class Product extends BaseEntity<Long> {
     @Column(name = "product_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal productPrice;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "product_categories",
         joinColumns = @JoinColumn(name = "product_id"),

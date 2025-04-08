@@ -20,7 +20,8 @@ public class ProductVariation {
     private BigDecimal price;
 
     @Column(nullable = false, precision = 10, scale = 2)  
-    private BigDecimal descount;
+    private BigDecimal discount;
+
 
     private int quantity;
     private String sku;
