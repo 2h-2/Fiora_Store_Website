@@ -6,10 +6,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Table(name = "product_variation")
 @Entity
-@Data
+@Table(name = "product_variation")
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductVariation {
@@ -32,11 +34,12 @@ public class ProductVariation {
     @Column(name="alt_text")
     private String AltText;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false, referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private Product product;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "product_sizes",
         joinColumns = @JoinColumn(name = "productVar_id"),
@@ -44,7 +47,7 @@ public class ProductVariation {
     )
     private Set<Size> sizes = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "product_colors",
         joinColumns = @JoinColumn(name = "productVar_id"),

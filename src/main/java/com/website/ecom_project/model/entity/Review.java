@@ -4,6 +4,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 
@@ -29,5 +31,6 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private Product product;
 }

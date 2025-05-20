@@ -31,7 +31,9 @@ public class CustomUserDetailsService implements UserDetailsService  {
                 new UsernameNotFoundException("User not found with username or email: "+ usernameOrEmail));
 
         List<String> roles = user.getRoles().stream()
-                .map(role -> ROLE_PREFIX + role).toList();
+                .map(role -> ROLE_PREFIX + role.getName()).toList();
+        
+        
 
         List<GrantedAuthority> authorities = roles.stream()
         .map(SimpleGrantedAuthority::new)

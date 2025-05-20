@@ -7,12 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.website.ecom_project.model.base.BaseEntity;
 
-
-@Table(name = "products")
 @Entity
+@Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,13 +42,11 @@ public class Product extends BaseEntity<Long> {
 
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonManagedReference
     @JsonIgnore 
     private Set<Review> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    @JsonIgnore 
+    @JsonIgnore
     private Set<ProductVariation> productVariations = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -60,7 +56,9 @@ public class Product extends BaseEntity<Long> {
     @JsonIgnore
     private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product")
     @JsonIgnore
     private Set<OrderItem> orderItems = new HashSet<>();
+
+
 }

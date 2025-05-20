@@ -15,6 +15,7 @@ import com.website.ecom_project.model.entity.User;
 import com.website.ecom_project.repository.RoleRepository;
 import com.website.ecom_project.repository.UserRepository;
 import com.website.ecom_project.service.AuthService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,7 +30,7 @@ public class AuthController {
     RoleRepository roleRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto){
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginDto){
         Optional<User> user = userRepo.findByEmail(loginDto.getEmail());
         if (user.isEmpty() || !authService.isValidPassword(loginDto.getPassword(), user.get().getPassword())) {
             return new ResponseEntity<>("Email or Password is not correct!", HttpStatus.BAD_REQUEST);

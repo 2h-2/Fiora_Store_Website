@@ -41,7 +41,5 @@ public class Category {
     @OneToMany(mappedBy = "parentCategory", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Category> subCategories = new HashSet<>();
 
-   /*  public Category(Long id){
-        this.id = id;
-    }*/
+
 }

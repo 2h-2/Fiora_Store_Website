@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").permitAll() 
                         .requestMatchers("/api/auth/**").permitAll() 
                         .requestMatchers("/api/test/**").permitAll()
+                        //.requestMatchers(HttpMethod.POST,"/api/products/create").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -48,4 +49,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

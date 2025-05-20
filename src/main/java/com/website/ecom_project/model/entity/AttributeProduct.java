@@ -1,5 +1,8 @@
 package com.website.ecom_project.model.entity;
 import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 
@@ -22,6 +25,7 @@ public class AttributeProduct {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private Product product;
 
     @ManyToOne
