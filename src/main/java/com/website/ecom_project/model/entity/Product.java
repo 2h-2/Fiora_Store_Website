@@ -52,13 +52,5 @@ public class Product extends BaseEntity<Long> {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<AttributeProduct> attributes = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<CartItem> cartItems = new HashSet<>();
-
-    @OneToMany(mappedBy = "product")
-    @JsonIgnore
-    private Set<OrderItem> orderItems = new HashSet<>();
-
 
 }

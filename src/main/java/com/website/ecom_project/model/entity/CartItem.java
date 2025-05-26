@@ -1,5 +1,8 @@
 package com.website.ecom_project.model.entity;
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.*;
@@ -18,12 +21,14 @@ public class CartItem {
     private Long id;
 
     private int quantity;
+    private BigDecimal productPrice;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @JoinColumn(name = "product_variation_id", nullable = false)
+    private ProductVariation productVariation;
 
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonIgnore
     private Cart cart;
 }

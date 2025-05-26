@@ -2,21 +2,19 @@ package com.website.ecom_project.model.entity;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.website.ecom_project.model.base.BaseEntity;
 import com.website.ecom_project.model.enums.OrderStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name = "carts")
+@Table(name = "orders")
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Order extends BaseEntity<Long> {
 
     @Column(name= "total_price")
     private BigDecimal totalPrice;
@@ -25,9 +23,9 @@ public class Order {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name= "user_id", nullable = false)
     private User user;
 

@@ -3,6 +3,8 @@ package com.website.ecom_project.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.website.ecom_project.model.dto.ProductDto;
@@ -70,19 +72,21 @@ public class ProductService {
         return response;
     }
 
-    public List<Product> getAllProduct(){
-        List<Product> products = productRepo.findAll();
-        
-        products.stream().map(product ->{
-            ProductResponse res = productMapper.toResponse(product);
-            
-            Set<String> categories = product.getCategories().stream().map(Category::getName).collect(Collectors.toSet());
-            res.setCategories(categories);
 
-            return res;
-        }).collect(Collectors.toList());
+    public Page<ProductResponse> getAllProduct(int page, int size){
+
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepo.findAll(pageable);
         
-        return products;
+        return productPage.map(product -> {
+            ProductResponse res = productMapper.toResponse(product);
+            Set<String> categories = product.getCategories()
+                                            .stream()
+                                            .map(Category::getName)
+                                            .collect(Collectors.toSet());
+            res.setCategories(categories);
+            return res;
+        });
     }
     
     public void createProductVarition(ProductVariationDto dto){
@@ -94,34 +98,24 @@ public class ProductService {
         
         productVar.setProduct(product); 
         
-        Set<Size> sizes = dto.getSizeIds().stream()
-        .map(id -> {
-            //System.out.println("Looking for Category ID: " + id); 
-            return sizeRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("size not found: " + id));
-        })
-        .collect(Collectors.toSet()); 
+        Size size = sizeRepo.findById(dto.getSizeId())
+                .orElseThrow(() -> new RuntimeException("size not found: " + dto.getSizeId()));
         
-        Set<Color> colors = dto.getColorIds().stream()
-        .map(id -> {
-            return colorRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("color not found: " + id));
-        })
-        .collect(Collectors.toSet()); 
+        Color color = colorRepo.findById(dto.getColorId())
+                .orElseThrow(() -> new RuntimeException("color not found: " + dto.getColorId()));
+
         
-        productVar.setSizes(sizes); 
-        productVar.setColors(colors); 
+        productVar.setSize(size); 
+        productVar.setColor(color); 
         
 
-        System.out.println("Product inside variation: " + productVar.getProduct());
-        System.out.println("Product ID inside variation: " + productVar.getProduct().getId());
         productVarRepo.save(productVar); 
     }
 
     
-    public List<ProductVariation> getProductVariation(Long id){
-        List<ProductVariation> products = productVarRepo.findAllByProductId(id);
-        return products;
+    public Page<ProductVariation> getProductVariation(Long id, int page, int size){
+        PageRequest pageable = PageRequest.of(page, size);
+        return productVarRepo.findAllByProductId(id, pageable);
     }
 
     // Review Service

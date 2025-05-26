@@ -27,7 +27,6 @@ public class CategoryController {
     //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addCategory(@RequestBody CategoryDto dto){
         try {
-            System.out.println(dto);
             categoryService.addCategory(dto);
             return new ResponseEntity<>("Category Added Successsfully.", HttpStatus.OK);
         

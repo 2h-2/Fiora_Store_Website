@@ -11,11 +11,9 @@ import com.website.ecom_project.model.entity.ProductVariation;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-
+    
     @Mapping(target = "attributes", ignore = true)  
     @Mapping(target = "productVariations", ignore = true) 
-    @Mapping(target = "cartItems", ignore = true) 
-    @Mapping(target = "orderItems", ignore = true) 
     @Mapping(target = "reviews", ignore = true) 
     @Mapping(target = "categories", ignore = true) 
     Product toEntity(ProductDto dto);
@@ -26,13 +24,16 @@ public interface ProductMapper {
     @Mapping(target = "categories", ignore = true)
     ProductResponse toResponse(Product product);
 
-    @Mapping(target = "colors", ignore = true)
-    @Mapping(target = "sizes", ignore = true) 
+    @Mapping(target = "color", ignore = true)
+    @Mapping(target = "size", ignore = true) 
     @Mapping(target = "id", ignore = true) 
     @Mapping(target = "product", ignore = true)
+    @Mapping(target = "cartItems", ignore = true) 
+    @Mapping(target = "orderItems", ignore = true) 
     ProductVariation toVariation(ProductVariationDto product);
 
 
     List<ProductDto> toDtoList(List<Product> products);
     List<Product> toEntityList(List<ProductDto> dtos);
+
 }

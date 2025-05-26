@@ -9,7 +9,7 @@ import com.website.ecom_project.model.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-      
+    
     @Mapping(target = "id", ignore = true)  
     @Mapping(target = "roles", ignore = true) 
     @Mapping(target = "enabled", ignore = true) 

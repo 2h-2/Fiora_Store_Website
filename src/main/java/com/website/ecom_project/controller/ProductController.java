@@ -41,9 +41,11 @@ public class ProductController {
     } 
 
     @GetMapping
-    public ResponseEntity<?> getAllProduct(){
+    public ResponseEntity<?> getAllProduct(@RequestParam(defaultValue = "0") int page, 
+                                            @RequestParam(defaultValue = "10") int size)
+    {
         try {            
-            return new ResponseEntity<>(productService.getAllProduct(), HttpStatus.OK);
+            return new ResponseEntity<>(productService.getAllProduct(page, size), HttpStatus.OK);
         
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
@@ -67,12 +69,15 @@ public class ProductController {
 
 
     @GetMapping("/{id}/varProducts")
-    public ResponseEntity<?> getProduct(@PathVariable Long id){
+    public ResponseEntity<?> getProduct(@PathVariable Long id,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size)
+    {
         try {            
-            return new ResponseEntity<>(productService.getProductVariation(id), HttpStatus.OK);
+            return new ResponseEntity<>(productService.getProductVariation(id, page, size), HttpStatus.OK);
         
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-        }
+        } 
     } 
 }

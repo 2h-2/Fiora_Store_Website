@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "product_variation")
@@ -25,7 +26,7 @@ public class ProductVariation {
     private BigDecimal discount;
 
 
-    private int quantity;
+    private int inventory;
     private String sku;
 
     @Column(name="image_url")
@@ -39,20 +40,31 @@ public class ProductVariation {
     @JsonIgnore
     private Product product;
     
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "product_sizes",
-        joinColumns = @JoinColumn(name = "productVar_id"),
-        inverseJoinColumns = @JoinColumn(name = "size_id")
-    )
-    private Set<Size> sizes = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "color_id")
+    private Color color;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "product_colors",
-        joinColumns = @JoinColumn(name = "productVar_id"),
-        inverseJoinColumns = @JoinColumn(name = "color_id")
-    )
-    private Set<Color> colors = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "size_id")
+    private Size size;
+
+    @OneToMany(mappedBy = "productVariation", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<CartItem> cartItems = new HashSet<>();
+
+    @OneToMany(mappedBy = "productVariation")
+    @JsonIgnore
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    @Transient
+    @JsonProperty("productDescription")
+    public String getProductDescription() {
+        return product != null ? product.getDescription() : null;
+    }
+
+    @Transient
+    public String getProductDescriptionAr() {
+        return product != null ? product.getDescriptionAr() : null;
+    }
 
 }

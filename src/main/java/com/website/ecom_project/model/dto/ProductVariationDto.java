@@ -1,7 +1,6 @@
 package com.website.ecom_project.model.dto;
 
 import java.math.BigDecimal;
-import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -14,6 +13,6 @@ public class ProductVariationDto {
     private String altText;
 
     private Long productId;
-    private Set<Long> sizeIds;
-    private Set<Long> colorIds;
+    private Long sizeId;
+    private Long colorId;
 }
