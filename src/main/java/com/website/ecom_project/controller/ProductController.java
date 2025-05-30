@@ -1,11 +1,14 @@
 package com.website.ecom_project.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.website.ecom_project.model.dto.ProductDto;
 import com.website.ecom_project.model.dto.ProductVariationDto;
+import com.website.ecom_project.model.entity.Product;
 import com.website.ecom_project.service.ProductService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,17 @@ public class ProductController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> search(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) String color) {
+        
+        List<Product> results = productService.searchProducts(name, category, size, color);
+        return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}")

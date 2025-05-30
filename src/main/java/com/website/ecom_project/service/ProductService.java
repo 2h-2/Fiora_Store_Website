@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.website.ecom_project.model.dto.ProductDto;
 import com.website.ecom_project.model.dto.ProductResponse;
+import com.website.ecom_project.model.dto.ProductSearchDto;
 import com.website.ecom_project.model.dto.ProductVariationDto;
 import com.website.ecom_project.model.dto.ReviewDto;
 import com.website.ecom_project.model.entity.Category;
@@ -26,6 +28,7 @@ import com.website.ecom_project.repository.ProductVariationRepository;
 import com.website.ecom_project.repository.ReviewRepository;
 import com.website.ecom_project.repository.SizeRepository;
 import com.website.ecom_project.repository.UserRepository;
+import com.website.ecom_project.repository.specification.ProductSpecification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -140,4 +143,26 @@ public class ProductService {
         return reviewRepo.findAllByProductId(id);
     }
 
+
+    public List<Product> searchProducts(String name, String category, String size, String color) {
+    Specification<Product> spec = Specification.where(null);
+
+    if (name != null && !name.isEmpty()) {
+        spec = spec.and(ProductSpecification.hasNameLike(name));
+    }
+
+    if (category != null && !category.isEmpty()) {
+        spec = spec.and(ProductSpecification.hasCategory(category));
+    }
+
+    if (size != null && !size.isEmpty()) {
+        spec = spec.and(ProductSpecification.hasSize(size));
+    }
+
+    if (color != null && !color.isEmpty()) {
+        spec = spec.and(ProductSpecification.hasColor(color));
+    }
+
+    return productRepo.findAll(spec);
+}
 } 
